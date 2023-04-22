@@ -2,8 +2,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 public class TodosTest {
     @Test
-    public void shouldAddThreeTasksOfDifferentType() {
-        SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям");
+    public void shouldFindFewTasks() {
+        SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям в субботу");
 
         String[] subtasks = { "Молоко", "Яйца", "Хлеб" };
         Epic epic = new Epic(55, subtasks);
@@ -12,7 +12,7 @@ public class TodosTest {
                 555,
                 "Выкатка 3й версии приложения",
                 "Приложение НетоБанка",
-                "Во вторник после обеда"
+                "в субботу в 23.15"
         );
 
         Todos todos = new Todos();
@@ -21,8 +21,57 @@ public class TodosTest {
         todos.add(epic);
         todos.add(meeting);
 
-        Task[] expected = { simpleTask, epic, meeting };
-        Task[] actual = todos.findAll();
+        Task[] actual = todos.search("в субботу");
+        Task[] expected = {simpleTask, meeting};
         Assertions.assertArrayEquals(expected, actual);
     }
+
+@Test
+public void shouldFindOneTask() {
+    SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям в субботу");
+
+    String[] subtasks = { "Молоко", "Яйца", "Хлеб" };
+    Epic epic = new Epic(55, subtasks);
+
+    Meeting meeting = new Meeting(
+            555,
+            "Выкатка 3й версии приложения",
+            "Приложение НетоБанка",
+            "в субботу в 23.15"
+            );
+    Todos todos = new Todos();
+
+    todos.add(simpleTask);
+    todos.add(epic);
+    todos.add(meeting);
+
+    Task[] actual = todos.search("Молоко");
+    Task[] expected = {epic};
+    Assertions.assertArrayEquals(expected, actual);
+}
+
+@Test
+    public void shouldFindNoOneTask() {
+    SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям в субботу");
+
+    String[] subtasks = { "Молоко", "Яйца", "Хлеб" };
+    Epic epic = new Epic(55, subtasks);
+
+    Meeting meeting = new Meeting(
+            555,
+            "Выкатка 3й версии приложения",
+            "Приложение НетоБанка",
+            "в субботу в 23.15"
+    );
+    Todos todos = new Todos();
+
+    todos.add(simpleTask);
+    todos.add(epic);
+    todos.add(meeting);
+
+    Task[] actual = todos.search("Купить новые духи");
+    Task[] expected = {};
+    Assertions.assertArrayEquals(expected, actual);
+}
+
 }
